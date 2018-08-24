@@ -8,16 +8,13 @@ class Search extends Component {
     }
     
     onChange= (e)=>{
-        console.log('change')
         this.setState({search: e.target.value})
     }
     onClick =() =>{
-        console.log('clicked')
         this.props.handleSearch(this.state.search)
     }
     handleKeyPress = (event) =>{
         if(event.key === 'Enter'){
-            console.log('pressed enter')
             this.props.handleSearch(this.state.search)
           }
     }

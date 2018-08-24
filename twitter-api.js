@@ -23,13 +23,13 @@ let client = new Twitter({
 //  });
 
 // url GET https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=twitterapi&count=2
-let screenName = 'Btmn_Ambrosio';
-let tweetCount = 2;
+let username = 'Btmn_Ambrosio';
+let tweetCount = 15;
 //Gets a certain number of tweets from user.
 exports.getTweets = () => {
         return new Promise ((resolve,reject)=>{
 
-            client.get('statuses/user_timeline',{screen_name:screenName,count:tweetCount},function(error, tweets, response) {
+            client.get('statuses/user_timeline',{screen_name:username,count:tweetCount},function(error, tweets, response) {
                 if(error){
                     reject('error')
                     throw error
@@ -54,10 +54,49 @@ exports.searchTweets = (term) => {
         client.get('search/tweets', {q: term, result_type:'popular'}, function(error, tweets, response) {
             if(error){
                 reject(error)
-                throw error
+                // throw error
             }
             else{
                 resolve(tweets.statuses)
+            }
+        });
+    });
+}
+
+
+
+exports.getScreenNameTweets = (screenName) => {
+    return new Promise ((resolve,reject)=>{
+
+        client.get('statuses/user_timeline',{screen_name:screenName,count:tweetCount},function(error, tweets, response) {
+            if(error){
+                console.log(error)
+                reject('error')
+                // throw error
+            }
+            else{
+
+                
+                resolve(tweets)
+
+            }
+        });
+    });
+}
+
+exports.searchUsers = (query) => {
+    return new Promise ((resolve,reject)=>{
+
+        client.get('users/search',{q:query,count:tweetCount},function(error, tweets, response) {
+            if(error){
+                reject('error')
+                // throw error
+            }
+            else{
+
+                
+                resolve(tweets)
+
             }
         });
     });

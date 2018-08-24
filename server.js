@@ -18,6 +18,8 @@ const tweets = {
 // socket.io server
 io.on('connection', socket => {
   // socket.emit('searched.response', tweets.term)
+  socket.emit('screenname.response', tweets.username)
+  socket.emit('searchedUser.response', tweets.name)
   socket.on('clickedTest', (data) => {
 
     // gets twitter feed from account and prints it---------------
@@ -28,7 +30,7 @@ io.on('connection', socket => {
       // console.log(result)
       data = result
       socket.emit('clicked.response', data)
-    }).catch( (err) =>{console.log(err)})
+    }).catch( (err) =>{socket.emit('clicked.response', [])})
 
     //----------------------------------------------
   })
@@ -39,14 +41,43 @@ io.on('connection', socket => {
     // gets search term from twitter and emit it---------------
     api.searchTweets(term).then((result)=>{
 
-      data = result
+      
       tweets.term = result
-      socket.emit('searched.response', data)
-    }).catch( (err) =>{console.log(err)})
+      socket.emit('searched.response', result)
+    }).catch( (err) =>{ socket.emit('searched.response', [])})
 
     //----------------------------------------------
   })
 
+  socket.on('searchScreenName', (screenName) => {
+
+    // gets twitter feed from account and prints it---------------
+
+    if(!screenName)
+      screenName='Btmn_Ambrosio'
+
+    console.log('searching for screename: '+ screenName)
+    if(screenName.length>1)
+      api.getScreenNameTweets(screenName).then((result)=>{
+        tweets.username = result
+        socket.emit('screenname.response', result)
+      }).catch( (err) =>{socket.emit('screenname.response', [])})
+    else{socket.emit('screenname.response', [])}
+    //----------------------------------------------
+  })
+
+  socket.on('searchName', (query) => {
+    if(!query)
+    query='Batman'
+    // gets search term from twitter and emit it---------------
+    api.searchUsers(query).then((result)=>{
+      tweets.name = result
+      socket.emit('searchedUser.response', result)
+    }).catch( (err) =>{console.log(err)})
+
+    //----------------------------------------------
+  })
+  
 })
 
 nextApp.prepare().then(() => {

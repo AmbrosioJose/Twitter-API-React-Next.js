@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import Tweets from '../components/tweets'
 import {Grid, Row, Col, PageHeader} from 'react-bootstrap'
-import Search  from '../components/search'
+import Users  from '../components/users'
 import Head from 'next/head'
 import fetch from 'isomorphic-unfetch'
 import SearchTabs from '../components/searchTabs'
@@ -27,6 +27,8 @@ class ChatOne extends Component {
     subscribe: false,
     subscribed: false,
     tweets:this.props.messages,
+    screenNameTweets:[],
+    nameTweets:[],
     isSearching:false,
     search:'',
 
@@ -36,6 +38,9 @@ class ChatOne extends Component {
     if (this.state.subscribe && !this.state.subscribed) {
       this.props.socket.on('clicked.response', this.handleServerResponse)
       this.props.socket.on('searched.response', this.handleServerResponse)
+      this.props.socket.on('screenname.response', this.handleScreenNameResponse)
+      this.props.socket.on('searchedUser.response', this.handleUserNameResponse)
+
       this.setState({ subscribed: true })
     }
   }
@@ -56,13 +61,26 @@ class ChatOne extends Component {
   componentWillUnmount () {
     this.props.socket.off('clicked.response', this.handleServerResponse)
     this.props.socket.off('searched.response', this.handleServerResponse)
+    this.props.socket.off('screenname.response', this.handleScreenNameResponse)
+    this.props.socket.off('searchedUser.response', this.handleUserNameResponse)
   }
 
   handleServerResponse = (message) =>{
 
-    console.log(message)
-    this.setState(state => ({
+    this.setState({
       tweets: message
+    })
+  }
+
+  handleScreenNameResponse = (message) =>{
+    this.setState(state => ({
+      screenNameTweets: message
+    }))
+  }
+
+  handleUserNameResponse = (message)=>{
+    this.setState(state => ({
+      nameTweets: message
     }))
   }
 
@@ -70,10 +88,11 @@ class ChatOne extends Component {
     this.setState({ activeTab: key });
   }
   handleSearch = (query) =>{
-    if(this.state.activeTab==0){
+
+    if(this.state.activeTab===0){
       this.setState({ search: query });
       this.props.socket.emit('searchTweet', query)
-    } else if (this.state.activeTab==1) {
+    } else if (this.state.activeTab===1) {
       this.setState({ searchedScreenName: query });
       this.props.socket.emit('searchScreenName', query)
     }
@@ -86,6 +105,14 @@ class ChatOne extends Component {
 
 
   render () {
+    let tweets = ''
+    if(this.state.activeTab===0){
+      tweets = <Tweets tweets={this.state.tweets}/>
+    }else if(this.state.activeTab===1){
+      tweets = <Tweets tweets={this.state.screenNameTweets}/>
+    } else{
+      tweets = <Users users={this.state.nameTweets}/>
+    }
     return (
       <main>
         <div className="App">
@@ -104,7 +131,7 @@ class ChatOne extends Component {
           <Grid>
             <Row className="show-grid">
               <Col xs={12} md={12}>
-                <Tweets tweets={this.state.tweets}/>
+                {tweets}
               </Col>
             </Row>
           </Grid>
