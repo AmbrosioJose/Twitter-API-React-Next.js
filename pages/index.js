@@ -120,10 +120,10 @@ class ChatOne extends Component {
             <title>Learning Twitter API App</title>
             <meta name="viewport" content="initial-scale=1.0, width=device-width" />
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossOrigin="anonymous"/>
-            
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossOrigin="anonymous"></link>
           </Head>
           <header className="App-header">
-            <PageHeader> Twitter API</PageHeader>
+            <PageHeader><i class="fab fa-twitter"></i> Twitter API</PageHeader>
 
           </header>
           <SearchTabs handleSearch={this.handleSearch} handleTabs={this.handleTabs}/>
